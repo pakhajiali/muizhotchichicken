@@ -685,3 +685,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('🍗 Restoran Pak Haji Ali & Muiz Hot Chicken – PWA ready');
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(() => console.log('✅ Service Worker registered'))
+    .catch(err => console.warn('SW registration failed:', err));
+}
