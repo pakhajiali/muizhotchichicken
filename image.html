@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muiz × Ngupi – 20ft 100 DPI</title>
+    <title>Muix × Ngupi – 20ft 100 DPI</title>
 
-    <!-- jsPDF for client‑side PDF generation -->
+    <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
     </script>
 
@@ -23,7 +23,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, sans-serif;
             padding: 16px;
         }
 
@@ -48,6 +48,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            /* crops to fill, no blank spaces */
         }
 
         .controls {
@@ -114,7 +115,7 @@
 </head>
 <body>
 
-    <!-- Preview (side‑by‑side) -->
+    <!-- Preview (exact match to PDF) -->
     <div class="sign">
         <div><img src="images/sign1.jpg" alt="Muiz Hot Chicken" id="imgLeft" /></div>
         <div><img src="images/sign2.png" alt="Ngupi Kopibazar" id="imgRight" /></div>
@@ -143,12 +144,9 @@
             const downloadJpgBtn = document.getElementById('downloadJpgBtn');
 
             // ─── 100 DPI for 20ft × 2ft ──────────────────────────────────
-            // 20 ft = 240 inches → 240 * 100 = 24 000 px wide
-            //  2 ft =  24 inches →  24 * 100 =  2 400 px high
             const OUTPUT_WIDTH = 24000;
             const OUTPUT_HEIGHT = OUTPUT_WIDTH / 10; // 2400
 
-            // PDF page size in points (1 pt = 1/72 inch)
             const PDF_WIDTH_PT = 20 * 12 * 72; // 17280 pt
             const PDF_HEIGHT_PT = 2 * 12 * 72; // 1728 pt
 
@@ -156,11 +154,26 @@
             let rightLoaded = false;
             let compositeReady = false;
 
+            // ─── object-fit: cover for canvas ────────────────────────────
+            function drawImageCover(img, dx, dy, dw, dh) {
+                const iw = img.naturalWidth;
+                const ih = img.naturalHeight;
+                if (iw === 0 || ih === 0) return;
+
+                const scale = Math.max(dw / iw, dh / ih);
+                const sw = dw / scale;
+                const sh = dh / scale;
+                const sx = (iw - sw) / 2;
+                const sy = (ih - sh) / 2;
+
+                ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+            }
+
             // ─── COMPOSITE ────────────────────────────────────────────────
             function compositeImages() {
                 if (!leftLoaded || !rightLoaded) return;
 
-                statusEl.textContent = '🖼️ Compositing 24k × 2.4k image… (may take 5‑10 seconds)';
+                statusEl.textContent = '🖼️ Compositing 24k × 2.4k image (cover mode)…';
 
                 canvas.width = OUTPUT_WIDTH;
                 canvas.height = OUTPUT_HEIGHT;
@@ -168,19 +181,22 @@
                 ctx.clearRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
                 const halfWidth = OUTPUT_WIDTH / 2;
-                ctx.drawImage(imgLeft, 0, 0, halfWidth, OUTPUT_HEIGHT);
-                ctx.drawImage(imgRight, halfWidth, 0, halfWidth, OUTPUT_HEIGHT);
+
+                // Left half – cover
+                drawImageCover(imgLeft, 0, 0, halfWidth, OUTPUT_HEIGHT);
+                // Right half – cover
+                drawImageCover(imgRight, halfWidth, 0, halfWidth, OUTPUT_HEIGHT);
 
                 compositeReady = true;
-                statusEl.textContent = '✅ Composite ready (24 000 × 2 400 px). Downloading PDF…';
+                statusEl.textContent = '✅ Composite ready (matches preview). Downloading PDF…';
 
-                // Auto‑download PDF after a short delay
+                // Auto‑download PDF after short delay
                 setTimeout(() => {
                     downloadPDF();
                 }, 400);
             }
 
-            // ─── DOWNLOAD: PDF (embeds the full 24k image) ──────────────
+            // ─── DOWNLOAD: PDF ────────────────────────────────────────────
             function downloadPDF() {
                 if (!compositeReady) {
                     statusEl.textContent = '⏳ Please wait, composite not ready.';
@@ -188,15 +204,12 @@
                 }
 
                 try {
-                    statusEl.textContent = '📄 Generating PDF (20ft × 2ft)… this may take a moment.';
+                    statusEl.textContent = '📄 Generating PDF (20ft × 2ft)…';
 
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('l', 'pt', [PDF_WIDTH_PT, PDF_HEIGHT_PT]);
 
-                    // Use maximum quality JPEG for the embedded image
                     const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
-                    // Add image – it will be scaled to fill the entire PDF page
                     doc.addImage(imgData, 'JPEG', 0, 0, PDF_WIDTH_PT, PDF_HEIGHT_PT);
 
                     doc.save('muiz_ngupi_20ft_100dpi.pdf');
@@ -208,7 +221,7 @@
                 }
             }
 
-            // ─── DOWNLOAD: JPEG (full 24k resolution) ────────────────────
+            // ─── DOWNLOAD: JPEG ──────────────────────────────────────────
             function downloadJPEG() {
                 if (!compositeReady) {
                     statusEl.textContent = '⏳ Please wait, composite not ready.';
@@ -243,7 +256,6 @@
                 compositeImages();
             });
 
-            // If images are already cached
             if (imgLeft.complete) leftLoaded = true;
             if (imgRight.complete) rightLoaded = true;
             if (imgLeft.complete && imgRight.complete) {
@@ -257,10 +269,8 @@
                 statusEl.textContent = '❌ Failed to load images/sign2.png';
             });
 
-            // ─── BUTTON BINDINGS ──────────────────────────────────────────
             downloadPdfBtn.addEventListener('click', downloadPDF);
             downloadJpgBtn.addEventListener('click', downloadJPEG);
-
         })();
     </script>
 
