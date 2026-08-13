@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muiz × Ngupi – 20ft Print</title>
+    <title>Muiz × Ngupi – 20ft 100 DPI</title>
+
+    <!-- jsPDF for client‑side PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -18,7 +23,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: system-ui, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             padding: 16px;
         }
 
@@ -54,25 +59,36 @@
         }
 
         .controls button {
-            background: #f5b342;
             border: none;
-            padding: 14px 40px;
+            padding: 14px 32px;
             border-radius: 40px;
             font-weight: 700;
-            font-size: 1.2rem;
-            color: #1a1a1a;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 4px 16px rgba(245, 179, 66, 0.4);
-        }
-
-        .controls button:hover {
-            background: #ffc107;
-            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
         }
 
         .controls button:active {
             transform: scale(0.97);
+        }
+
+        .btn-pdf {
+            background: #e74c3c;
+            color: #fff;
+        }
+        .btn-pdf:hover {
+            background: #c0392b;
+            transform: scale(1.03);
+        }
+
+        .btn-jpg {
+            background: #f5b342;
+            color: #1a1a1a;
+        }
+        .btn-jpg:hover {
+            background: #ffc107;
+            transform: scale(1.03);
         }
 
         #compositeCanvas {
@@ -84,7 +100,8 @@
             margin-top: 12px;
             font-size: 0.95rem;
             text-align: center;
-            max-width: 600px;
+            max-width: 700px;
+            line-height: 1.5;
         }
 
         .note {
@@ -97,17 +114,20 @@
 </head>
 <body>
 
-    <!-- Display the side‑by‑side preview -->
+    <!-- Preview (side‑by‑side) -->
     <div class="sign">
         <div><img src="images/sign1.jpg" alt="Muiz Hot Chicken" id="imgLeft" /></div>
         <div><img src="images/sign2.png" alt="Ngupi Kopibazar" id="imgRight" /></div>
     </div>
 
     <div class="controls">
-        <button id="downloadBtn">⬇ Download 20ft‑ready image</button>
+        <button class="btn-pdf" id="downloadPdfBtn">⬇ Download PDF (20ft)</button>
+        <button class="btn-jpg" id="downloadJpgBtn">⬇ Download JPEG</button>
     </div>
     <div class="status" id="status">⏳ Loading images…</div>
-    <div class="note">Output: 24,000 × 2,400 px · JPEG max quality · ~150 MB (varies)</div>
+    <div class="note">
+        Output: 24,000 × 2,400 px (100 DPI) · JPEG max quality · PDF page: 20ft × 2ft (17280 × 1728 pt)
+    </div>
 
     <canvas id="compositeCanvas"></canvas>
 
@@ -118,115 +138,129 @@
             const canvas = document.getElementById('compositeCanvas');
             const ctx = canvas.getContext('2d');
             const statusEl = document.getElementById('status');
-            const downloadBtn = document.getElementById('downloadBtn');
 
-            // ─── PRINT RESOLUTION ────────────────────────────
-            // 20 ft = 240 inches, at 100 DPI → 24000 px wide
-            // 2 ft  = 24 inches, at 100 DPI → 2400 px high
+            const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+            const downloadJpgBtn = document.getElementById('downloadJpgBtn');
+
+            // ─── 100 DPI for 20ft × 2ft ──────────────────────────────────
+            // 20 ft = 240 inches → 240 * 100 = 24 000 px wide
+            //  2 ft =  24 inches →  24 * 100 =  2 400 px high
             const OUTPUT_WIDTH = 24000;
             const OUTPUT_HEIGHT = OUTPUT_WIDTH / 10; // 2400
 
+            // PDF page size in points (1 pt = 1/72 inch)
+            const PDF_WIDTH_PT = 20 * 12 * 72; // 17280 pt
+            const PDF_HEIGHT_PT = 2 * 12 * 72; // 1728 pt
+
             let leftLoaded = false;
             let rightLoaded = false;
+            let compositeReady = false;
 
-            function compositeAndDownload(auto = true) {
-                if (!leftLoaded || !rightLoaded) {
-                    statusEl.textContent = '⚠️ Images not loaded yet. Please wait.';
-                    return;
-                }
+            // ─── COMPOSITE ────────────────────────────────────────────────
+            function compositeImages() {
+                if (!leftLoaded || !rightLoaded) return;
 
-                statusEl.textContent = '🖼️ Compositing 24k × 2.4k image… (may take a moment)';
+                statusEl.textContent = '🖼️ Compositing 24k × 2.4k image… (may take 5‑10 seconds)';
 
-                // Set canvas to high resolution
                 canvas.width = OUTPUT_WIDTH;
                 canvas.height = OUTPUT_HEIGHT;
 
-                // Clear
                 ctx.clearRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
-                // Draw halves
                 const halfWidth = OUTPUT_WIDTH / 2;
-                // We use drawImage with source image natural dimensions to avoid distortion
-                // but we just stretch them to fill each half (cover behaviour)
                 ctx.drawImage(imgLeft, 0, 0, halfWidth, OUTPUT_HEIGHT);
                 ctx.drawImage(imgRight, halfWidth, 0, halfWidth, OUTPUT_HEIGHT);
 
-                statusEl.textContent = '✅ Composite ready. ' + (auto ? 'Downloading…' : 'Click again to save.');
+                compositeReady = true;
+                statusEl.textContent = '✅ Composite ready (24 000 × 2 400 px). Downloading PDF…';
 
-                // Trigger download (for auto or manual)
-                if (auto) {
-                    // Short delay to let UI update
-                    setTimeout(() => {
-                        triggerDownload();
-                    }, 400);
+                // Auto‑download PDF after a short delay
+                setTimeout(() => {
+                    downloadPDF();
+                }, 400);
+            }
+
+            // ─── DOWNLOAD: PDF (embeds the full 24k image) ──────────────
+            function downloadPDF() {
+                if (!compositeReady) {
+                    statusEl.textContent = '⏳ Please wait, composite not ready.';
+                    return;
+                }
+
+                try {
+                    statusEl.textContent = '📄 Generating PDF (20ft × 2ft)… this may take a moment.';
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF('l', 'pt', [PDF_WIDTH_PT, PDF_HEIGHT_PT]);
+
+                    // Use maximum quality JPEG for the embedded image
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+                    // Add image – it will be scaled to fill the entire PDF page
+                    doc.addImage(imgData, 'JPEG', 0, 0, PDF_WIDTH_PT, PDF_HEIGHT_PT);
+
+                    doc.save('muiz_ngupi_20ft_100dpi.pdf');
+
+                    statusEl.textContent = '✅ PDF downloaded! (17280 × 1728 pt, ~100‑150 MB)';
+                } catch (e) {
+                    statusEl.textContent = '❌ PDF generation failed. Try again.';
+                    console.warn('PDF error:', e);
                 }
             }
 
-            function triggerDownload() {
+            // ─── DOWNLOAD: JPEG (full 24k resolution) ────────────────────
+            function downloadJPEG() {
+                if (!compositeReady) {
+                    statusEl.textContent = '⏳ Please wait, composite not ready.';
+                    return;
+                }
+
                 try {
-                    // Use maximum quality (1.0) for JPEG
-                    const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
+                    statusEl.textContent = '📷 Generating JPEG…';
                     const link = document.createElement('a');
                     link.download = 'muiz_ngupi_20ft_24000x2400.jpg';
-                    link.href = dataUrl;
+                    link.href = canvas.toDataURL('image/jpeg', 1.0);
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    statusEl.textContent = '✅ Download started! (file may be ~150 MB)';
+                    statusEl.textContent = '✅ JPEG downloaded (max quality, ~150‑200 MB)!';
                 } catch (e) {
-                    statusEl.textContent = '❌ Download error. Try again.';
-                    console.warn('Download error:', e);
+                    statusEl.textContent = '❌ JPEG download error.';
+                    console.warn('JPEG error:', e);
                 }
             }
 
-            // ─── Image load handlers ──────────────────────────
+            // ─── IMAGE LOAD HANDLERS ─────────────────────────────────────
             imgLeft.addEventListener('load', function() {
                 leftLoaded = true;
                 statusEl.textContent = 'Left image loaded.';
-                checkAndComposite();
+                compositeImages();
             });
+
             imgRight.addEventListener('load', function() {
                 rightLoaded = true;
                 statusEl.textContent = 'Right image loaded.';
-                checkAndComposite();
+                compositeImages();
             });
 
             // If images are already cached
             if (imgLeft.complete) leftLoaded = true;
             if (imgRight.complete) rightLoaded = true;
             if (imgLeft.complete && imgRight.complete) {
-                // both loaded, but we need to ensure we composite after a tiny delay
-                setTimeout(checkAndComposite, 100);
+                setTimeout(compositeImages, 100);
             }
 
-            function checkAndComposite() {
-                if (leftLoaded && rightLoaded) {
-                    compositeAndDownload(true); // auto-download
-                }
-            }
-
-            // ─── Manual button ──────────────────────────────
-            downloadBtn.addEventListener('click', function() {
-                if (!leftLoaded || !rightLoaded) {
-                    statusEl.textContent = '⏳ Please wait for images to load.';
-                    return;
-                }
-                // If canvas hasn't been drawn yet (e.g., auto-download failed), draw now
-                if (canvas.width === 0) {
-                    compositeAndDownload(false);
-                } else {
-                    // If already drawn, just download again
-                    triggerDownload();
-                }
-            });
-
-            // ─── Error handling ──────────────────────────────
             imgLeft.addEventListener('error', () => {
                 statusEl.textContent = '❌ Failed to load images/sign1.jpg';
             });
             imgRight.addEventListener('error', () => {
                 statusEl.textContent = '❌ Failed to load images/sign2.png';
             });
+
+            // ─── BUTTON BINDINGS ──────────────────────────────────────────
+            downloadPdfBtn.addEventListener('click', downloadPDF);
+            downloadJpgBtn.addEventListener('click', downloadJPEG);
+
         })();
     </script>
 
