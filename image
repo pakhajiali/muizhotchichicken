@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muiz Hot Chicken & Ngupi Kopibazar</title>
+    <style>
+        /* reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 10:1 container – full viewport width */
+        .sign {
+            width: 100vw;
+            aspect-ratio: 10 / 1;
+            display: flex;
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* each half exactly 50% */
+        .sign>div {
+            flex: 0 0 50%;
+            overflow: hidden;
+        }
+
+        .sign img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* fills area, crops if needed – no gaps */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sign">
+        <!-- LEFT: Muiz Hot Chicken (sign1.jpg) -->
+        <div>
+            <img src="images/sign1.jpg" alt="Muiz Hot Chicken" />
+        </div>
+        <!-- RIGHT: Ngupi Kopibazar (sign2.png) -->
+        <div>
+            <img src="images/sign2.png" alt="Ngupi Kopibazar" />
+        </div>
+    </div>
+
+</body>
+</html>
