@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Muiz Hot Chicken & Ngupi Kopibazar</title>
     <style>
-        /* reset */
         * {
             margin: 0;
             padding: 0;
@@ -13,23 +12,27 @@
         }
 
         body {
-            background: #000;
+            background: #0a0a0a;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            font-family: system-ui, -apple-system, sans-serif;
         }
 
-        /* 10:1 container – full viewport width */
+        /* display the side‑by‑side as requested */
         .sign {
             width: 100vw;
+            max-width: 1200px;
             aspect-ratio: 10 / 1;
             display: flex;
             overflow: hidden;
             background: #000;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
         }
 
-        /* each half exactly 50% */
         .sign>div {
             flex: 0 0 50%;
             overflow: hidden;
@@ -40,22 +43,185 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* fills area, crops if needed – no gaps */
+        }
+
+        .controls {
+            margin-top: 24px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .controls button {
+            background: #f5b342;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a1a1a;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(245, 179, 66, 0.3);
+        }
+
+        .controls button:hover {
+            background: #ffc107;
+            transform: scale(1.02);
+        }
+
+        .controls button:active {
+            transform: scale(0.97);
+        }
+
+        /* hidden canvas used for compositing */
+        #compositeCanvas {
+            display: none;
+        }
+
+        .status {
+            color: #aaa;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
+    <!-- Display the two images side‑by‑side (HTML requirement) -->
     <div class="sign">
-        <!-- LEFT: Muiz Hot Chicken (sign1.jpg) -->
         <div>
-            <img src="images/sign1.jpg" alt="Muiz Hot Chicken" />
+            <img src="images/sign1.jpg" alt="Muiz Hot Chicken" id="imgLeft" />
         </div>
-        <!-- RIGHT: Ngupi Kopibazar (sign2.png) -->
         <div>
-            <img src="images/sign2.png" alt="Ngupi Kopibazar" />
+            <img src="images/sign2.png" alt="Ngupi Kopibazar" id="imgRight" />
         </div>
     </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button id="downloadBtn">⬇ Download combined image</button>
+    </div>
+    <div class="status" id="status">Loading images…</div>
+
+    <!-- Hidden canvas for compositing -->
+    <canvas id="compositeCanvas"></canvas>
+
+    <script>
+        (function() {
+            const imgLeft = document.getElementById('imgLeft');
+            const imgRight = document.getElementById('imgRight');
+            const canvas = document.getElementById('compositeCanvas');
+            const ctx = canvas.getContext('2d');
+            const statusEl = document.getElementById('status');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            // Desired output dimensions (10:1)
+            const OUTPUT_WIDTH = 2400; // good quality
+            const OUTPUT_HEIGHT = OUTPUT_WIDTH / 10; // 240
+
+            let leftLoaded = false;
+            let rightLoaded = false;
+
+            function checkAndComposite() {
+                if (!leftLoaded || !rightLoaded) return;
+
+                statusEl.textContent = 'Compositing image…';
+
+                // Set canvas size
+                canvas.width = OUTPUT_WIDTH;
+                canvas.height = OUTPUT_HEIGHT;
+
+                // Clear
+                ctx.clearRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+
+                // Draw left half (0 to 50% width)
+                const halfWidth = OUTPUT_WIDTH / 2;
+                ctx.drawImage(imgLeft, 0, 0, halfWidth, OUTPUT_HEIGHT);
+
+                // Draw right half (50% to 100% width)
+                ctx.drawImage(imgRight, halfWidth, 0, halfWidth, OUTPUT_HEIGHT);
+
+                statusEl.textContent = '✅ Combined image ready!';
+
+                // Auto‑download after a tiny delay (allows UI to update)
+                setTimeout(() => {
+                    triggerDownload();
+                }, 300);
+            }
+
+            function triggerDownload() {
+                try {
+                    const link = document.createElement('a');
+                    link.download = 'muiz_ngupi_combined.jpg';
+                    link.href = canvas.toDataURL('image/jpeg', 0.92);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    statusEl.textContent = '✅ Download started!';
+                } catch (e) {
+                    statusEl.textContent = '⚠️ Auto‑download failed. Use the button.';
+                    console.warn('Download error:', e);
+                }
+            }
+
+            // Handle image load events
+            imgLeft.addEventListener('load', function() {
+                leftLoaded = true;
+                statusEl.textContent = 'Left image loaded.';
+                checkAndComposite();
+            });
+            imgRight.addEventListener('load', function() {
+                rightLoaded = true;
+                statusEl.textContent = 'Right image loaded.';
+                checkAndComposite();
+            });
+
+            // If images are already cached, they may load before we attach listeners.
+            // Check and set loaded state if they are already complete.
+            if (imgLeft.complete) {
+                leftLoaded = true;
+                statusEl.textContent = 'Left image already loaded.';
+            }
+            if (imgRight.complete) {
+                rightLoaded = true;
+                statusEl.textContent = 'Right image already loaded.';
+            }
+            // In case both are already complete, call check.
+            if (imgLeft.complete && imgRight.complete) {
+                checkAndComposite();
+            }
+
+            // Manual download button
+            downloadBtn.addEventListener('click', function() {
+                if (!leftLoaded || !rightLoaded) {
+                    statusEl.textContent = '⚠️ Images not loaded yet. Please wait.';
+                    return;
+                }
+                // Ensure canvas is drawn
+                if (canvas.width === 0) {
+                    checkAndComposite();
+                    // after a short delay, trigger download again (or just call)
+                    setTimeout(() => {
+                        triggerDownload();
+                    }, 200);
+                } else {
+                    triggerDownload();
+                }
+            });
+
+            // Fallback: if images fail to load, show error
+            imgLeft.addEventListener('error', function() {
+                statusEl.textContent = '❌ Failed to load left image (sign1.jpg)';
+            });
+            imgRight.addEventListener('error', function() {
+                statusEl.textContent = '❌ Failed to load right image (sign2.png)';
+            });
+
+        })();
+    </script>
 
 </body>
 </html>
