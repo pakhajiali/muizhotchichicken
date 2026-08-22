@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Muix × Ngupi – 20ft × 4ft 100 DPI</title>
 
-    <!-- jsPDF -->
+    <!-- jsPDF (kept for optional PDF export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
     </script>
 
@@ -187,12 +187,7 @@
                 drawImageCover(imgRight, halfWidth, 0, halfWidth, OUTPUT_HEIGHT);
 
                 compositeReady = true;
-                statusEl.textContent = '✅ Composite ready (matches preview). Downloading PDF…';
-
-                // Auto‑download PDF after short delay
-                setTimeout(() => {
-                    downloadPDF();
-                }, 400);
+                statusEl.textContent = '✅ Composite ready – use buttons to download.';
             }
 
             // ─── DOWNLOAD: PDF ────────────────────────────────────────────
@@ -213,7 +208,7 @@
 
                     doc.save('muiz_ngupi_20ftx4ft_100dpi.pdf');
 
-                    statusEl.textContent = '✅ PDF downloaded! (17280 × 3456 pt, ~150‑250 MB)';
+                    statusEl.textContent = '✅ PDF downloaded! (17280 × 3456 pt)';
                 } catch (e) {
                     statusEl.textContent = '❌ PDF generation failed. Try again.';
                     console.warn('PDF error:', e);
@@ -235,7 +230,7 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    statusEl.textContent = '✅ JPEG downloaded (max quality, ~150‑250 MB)!';
+                    statusEl.textContent = '✅ JPEG downloaded (max quality)!';
                 } catch (e) {
                     statusEl.textContent = '❌ JPEG download error.';
                     console.warn('JPEG error:', e);
