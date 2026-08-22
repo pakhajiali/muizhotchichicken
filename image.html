@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muix × Ngupi – 20ft 100 DPI</title>
+    <title>Muix × Ngupi – 20ft × 4ft 100 DPI</title>
 
     <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
@@ -30,7 +30,7 @@
         .sign {
             width: 100vw;
             max-width: 1200px;
-            aspect-ratio: 10 / 1;
+            aspect-ratio: 5 / 1;
             display: flex;
             overflow: hidden;
             background: #000;
@@ -48,7 +48,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* crops to fill, no blank spaces */
         }
 
         .controls {
@@ -117,17 +116,17 @@
 
     <!-- Preview (exact match to PDF) -->
     <div class="sign">
-        <div><img src="images/sign1.jpg" alt="Muiz Hot Chicken" id="imgLeft" /></div>
+        <div><img src="images/sign1.jpg" alt="Muix Hot Chicken" id="imgLeft" /></div>
         <div><img src="images/sign2.png" alt="Ngupi Kopibazar" id="imgRight" /></div>
     </div>
 
     <div class="controls">
-        <button class="btn-pdf" id="downloadPdfBtn">⬇ Download PDF (20ft)</button>
+        <button class="btn-pdf" id="downloadPdfBtn">⬇ Download PDF (20ft × 4ft)</button>
         <button class="btn-jpg" id="downloadJpgBtn">⬇ Download JPEG</button>
     </div>
     <div class="status" id="status">⏳ Loading images…</div>
     <div class="note">
-        Output: 24,000 × 2,400 px (100 DPI) · JPEG max quality · PDF page: 20ft × 2ft (17280 × 1728 pt)
+        Output: 24,000 × 4,800 px (100 DPI) · JPEG max quality · PDF page: 20ft × 4ft (17280 × 3456 pt)
     </div>
 
     <canvas id="compositeCanvas"></canvas>
@@ -143,12 +142,12 @@
             const downloadPdfBtn = document.getElementById('downloadPdfBtn');
             const downloadJpgBtn = document.getElementById('downloadJpgBtn');
 
-            // ─── 100 DPI for 20ft × 2ft ──────────────────────────────────
+            // ─── 100 DPI for 20ft × 4ft ──────────────────────────────────
             const OUTPUT_WIDTH = 24000;
-            const OUTPUT_HEIGHT = OUTPUT_WIDTH / 10; // 2400
+            const OUTPUT_HEIGHT = OUTPUT_WIDTH / 5; // 4800
 
             const PDF_WIDTH_PT = 20 * 12 * 72; // 17280 pt
-            const PDF_HEIGHT_PT = 2 * 12 * 72; // 1728 pt
+            const PDF_HEIGHT_PT = 4 * 12 * 72; // 3456 pt
 
             let leftLoaded = false;
             let rightLoaded = false;
@@ -173,7 +172,7 @@
             function compositeImages() {
                 if (!leftLoaded || !rightLoaded) return;
 
-                statusEl.textContent = '🖼️ Compositing 24k × 2.4k image (cover mode)…';
+                statusEl.textContent = '🖼️ Compositing 24k × 4.8k image (cover mode)…';
 
                 canvas.width = OUTPUT_WIDTH;
                 canvas.height = OUTPUT_HEIGHT;
@@ -204,7 +203,7 @@
                 }
 
                 try {
-                    statusEl.textContent = '📄 Generating PDF (20ft × 2ft)…';
+                    statusEl.textContent = '📄 Generating PDF (20ft × 4ft)…';
 
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('l', 'pt', [PDF_WIDTH_PT, PDF_HEIGHT_PT]);
@@ -212,9 +211,9 @@
                     const imgData = canvas.toDataURL('image/jpeg', 1.0);
                     doc.addImage(imgData, 'JPEG', 0, 0, PDF_WIDTH_PT, PDF_HEIGHT_PT);
 
-                    doc.save('muiz_ngupi_20ft_100dpi.pdf');
+                    doc.save('muiz_ngupi_20ftx4ft_100dpi.pdf');
 
-                    statusEl.textContent = '✅ PDF downloaded! (17280 × 1728 pt, ~100‑150 MB)';
+                    statusEl.textContent = '✅ PDF downloaded! (17280 × 3456 pt, ~150‑250 MB)';
                 } catch (e) {
                     statusEl.textContent = '❌ PDF generation failed. Try again.';
                     console.warn('PDF error:', e);
@@ -231,12 +230,12 @@
                 try {
                     statusEl.textContent = '📷 Generating JPEG…';
                     const link = document.createElement('a');
-                    link.download = 'muiz_ngupi_20ft_24000x2400.jpg';
+                    link.download = 'muiz_ngupi_20ftx4ft_24000x4800.jpg';
                     link.href = canvas.toDataURL('image/jpeg', 1.0);
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    statusEl.textContent = '✅ JPEG downloaded (max quality, ~150‑200 MB)!';
+                    statusEl.textContent = '✅ JPEG downloaded (max quality, ~150‑250 MB)!';
                 } catch (e) {
                     statusEl.textContent = '❌ JPEG download error.';
                     console.warn('JPEG error:', e);
