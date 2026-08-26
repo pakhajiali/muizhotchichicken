@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ngupi – 10ft × 2ft 100 DPI</title>
 
-    <!-- jsPDF (kept for optional PDF export) -->
+    <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
     </script>
 
@@ -32,16 +32,21 @@
             max-width: 900px;
             aspect-ratio: 5 / 1;
             overflow: hidden;
-            background: #000;
+            background: #6A1B9A; /* ZUS purple */
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .sign img {
             display: block;
-            width: 100%;
+            width: auto;
             height: 100%;
-            object-fit: fill;  /* stretch to fill, no crop, no black bars */
+            max-width: 100%;
+            object-fit: contain; /* keeps aspect ratio, no stretch */
+            background: #6A1B9A; /* match container background */
         }
 
         .controls {
@@ -108,7 +113,7 @@
 </head>
 <body>
 
-    <!-- Preview – image stretched to fill, no crop, no black bars -->
+    <!-- Preview – image centered, purple background, no stretch -->
     <div class="sign">
         <img src="images/sign2.jpg" alt="Ngupi Kopi Bazar" id="signImg" />
     </div>
@@ -119,7 +124,7 @@
     </div>
     <div class="status" id="status">⏳ Loading image…</div>
     <div class="note">
-        Output: 12,000 × 2,400 px (100 DPI) · JPEG max quality · Image stretched to fill, no cropping, no black bars
+        Output: 12,000 × 2,400 px (100 DPI) · Image kept original aspect ratio · Purple ZUS background fills the rest
     </div>
 
     <canvas id="compositeCanvas"></canvas>
@@ -141,28 +146,43 @@
             const PDF_WIDTH_PT = 10 * 12 * 72;
             const PDF_HEIGHT_PT = 2 * 12 * 72;
 
+            // ZUS purple background
+            const BG_COLOR = '#6A1B9A';
+
             let imageLoaded = false;
             let compositeReady = false;
 
-            // ─── Stretch to fill (no crop, no black bars) ──────────────
-            function drawImageStretch(img, dx, dy, dw, dh) {
-                // Draws the image to fill the entire canvas, distorting if needed
-                ctx.drawImage(img, dx, dy, dw, dh);
+            // ─── Draw image centered with aspect ratio preserved ──────
+            function drawImageContain(img, dx, dy, dw, dh) {
+                const iw = img.naturalWidth;
+                const ih = img.naturalHeight;
+                if (iw === 0 || ih === 0) return;
+
+                // Calculate scale to fit inside the box (no cropping)
+                const scale = Math.min(dw / iw, dh / ih);
+                const dWidth = iw * scale;
+                const dHeight = ih * scale;
+                const xOffset = (dw - dWidth) / 2;
+                const yOffset = (dh - dHeight) / 2;
+
+                ctx.drawImage(img, 0, 0, iw, ih, dx + xOffset, dy + yOffset, dWidth, dHeight);
             }
 
             // ─── COMPOSITE ──────────────────────────────────────────────
             function compositeImage() {
                 if (!imageLoaded) return;
 
-                statusEl.textContent = '🖼️ Compositing 12k × 2.4k image (stretched to fill)…';
+                statusEl.textContent = '🖼️ Compositing 12k × 2.4k image (contain, purple bg)…';
 
                 canvas.width = OUTPUT_WIDTH;
                 canvas.height = OUTPUT_HEIGHT;
 
-                ctx.clearRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+                // Fill with purple background
+                ctx.fillStyle = BG_COLOR;
+                ctx.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
-                // Stretch image to fill entire canvas – no crop, no black bars
-                drawImageStretch(signImg, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+                // Draw image centered, aspect ratio preserved
+                drawImageContain(signImg, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
                 compositeReady = true;
                 statusEl.textContent = '✅ Composite ready – use buttons to download.';
