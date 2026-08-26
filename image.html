@@ -35,13 +35,17 @@
             background: #000;
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .sign img {
             display: block;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: #000;
         }
 
         .controls {
@@ -108,7 +112,7 @@
 </head>
 <body>
 
-    <!-- Preview (single image, full width) -->
+    <!-- Preview (single image, full width, contained) -->
     <div class="sign">
         <img src="images/sign2.jpg" alt="Ngupi Kopibazar" id="signImg" />
     </div>
@@ -119,7 +123,7 @@
     </div>
     <div class="status" id="status">⏳ Loading image…</div>
     <div class="note">
-        Output: 12,000 × 2,400 px (100 DPI) · JPEG max quality · PDF page: 10ft × 2ft (8640 × 1728 pt)
+        Output: 12,000 × 2,400 px (100 DPI) · JPEG max quality · Image is fully visible (contained, black bars if needed)
     </div>
 
     <canvas id="compositeCanvas"></canvas>
@@ -144,34 +148,37 @@
             let imageLoaded = false;
             let compositeReady = false;
 
-            // ─── object-fit: cover for canvas ────────────────────────────
-            function drawImageCover(img, dx, dy, dw, dh) {
+            // ─── object-fit: contain for canvas (full image visible, centered) ──
+            function drawImageContain(img, dx, dy, dw, dh) {
                 const iw = img.naturalWidth;
                 const ih = img.naturalHeight;
                 if (iw === 0 || ih === 0) return;
 
-                const scale = Math.max(dw / iw, dh / ih);
-                const sw = dw / scale;
-                const sh = dh / scale;
-                const sx = (iw - sw) / 2;
-                const sy = (ih - sh) / 2;
+                // Calculate scale to fit INSIDE the box (no cropping)
+                const scale = Math.min(dw / iw, dh / ih);
+                const dWidth = iw * scale;
+                const dHeight = ih * scale;
+                const xOffset = (dw - dWidth) / 2;
+                const yOffset = (dh - dHeight) / 2;
 
-                ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+                ctx.drawImage(img, 0, 0, iw, ih, dx + xOffset, dy + yOffset, dWidth, dHeight);
             }
 
             // ─── COMPOSITE ────────────────────────────────────────────────
             function compositeImage() {
                 if (!imageLoaded) return;
 
-                statusEl.textContent = '🖼️ Compositing 12k × 2.4k image (cover mode)…';
+                statusEl.textContent = '🖼️ Compositing 12k × 2.4k image (contain mode)…';
 
                 canvas.width = OUTPUT_WIDTH;
                 canvas.height = OUTPUT_HEIGHT;
 
-                ctx.clearRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+                // Black background (for letterbox/pillarbox)
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
-                // Draw single image covering the full canvas
-                drawImageCover(signImg, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+                // Draw single image fitting fully inside the canvas
+                drawImageContain(signImg, 0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
                 compositeReady = true;
                 statusEl.textContent = '✅ Composite ready – use buttons to download.';
