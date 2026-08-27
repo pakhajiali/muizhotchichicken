@@ -32,7 +32,7 @@
             max-width: 900px;
             aspect-ratio: 5 / 1;
             overflow: hidden;
-            background: #0F4C81; /* PANTONE 19-4052 Classic Blue */
+            background: #273880; /* custom blue */
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
             display: flex;
@@ -46,7 +46,7 @@
             height: 100%;
             max-width: 100%;
             object-fit: contain;
-            background: #0F4C81; /* match container */
+            background: #273880; /* match container */
         }
 
         .controls {
@@ -113,7 +113,7 @@
 </head>
 <body>
 
-    <!-- Preview – image centered on Classic Blue background -->
+    <!-- Preview – image centered on #273880 background -->
     <div class="sign">
         <img src="images/sign2.jpg" alt="Ngupi Kopi Bazar" id="signImg" />
     </div>
@@ -124,7 +124,7 @@
     </div>
     <div class="status" id="status">⏳ Loading image…</div>
     <div class="note">
-        Output: 12,000 × 2,400 px (100 DPI) · Image kept original aspect ratio · Classic Blue (PANTONE 19-4052) background
+        Output: 12,000 × 2,400 px (100 DPI) · Image kept original aspect ratio · Background: #273880
     </div>
 
     <canvas id="compositeCanvas"></canvas>
@@ -146,8 +146,8 @@
             const PDF_WIDTH_PT = 10 * 12 * 72;
             const PDF_HEIGHT_PT = 2 * 12 * 72;
 
-            // PANTONE 19-4052 Classic Blue
-            const BG_COLOR = '#0F4C81';
+            // Custom background colour
+            const BG_COLOR = '#273880';
 
             let imageLoaded = false;
             let compositeReady = false;
@@ -171,12 +171,12 @@
             function compositeImage() {
                 if (!imageLoaded) return;
 
-                statusEl.textContent = '🖼️ Compositing 12k × 2.4k image (contain, Classic Blue bg)…';
+                statusEl.textContent = '🖼️ Compositing 12k × 2.4k image (contain, #273880 bg)…';
 
                 canvas.width = OUTPUT_WIDTH;
                 canvas.height = OUTPUT_HEIGHT;
 
-                // Fill with Classic Blue
+                // Fill with custom blue
                 ctx.fillStyle = BG_COLOR;
                 ctx.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
