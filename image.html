@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ngupi – 10ft × 2ft 100 DPI</title>
+    <title>Ngupi – 10ft × 4ft 100 DPI</title>
 
     <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
@@ -30,9 +30,9 @@
         .sign {
             width: 100vw;
             max-width: 900px;
-            aspect-ratio: 5 / 1;
+            aspect-ratio: 5 / 2; /* 10ft × 4ft = 2.5:1 */
             overflow: hidden;
-            background: #06038D; /* custom deep blue */
+            background: #06038D;
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
             display: flex;
@@ -46,7 +46,7 @@
             height: 100%;
             max-width: 100%;
             object-fit: contain;
-            background: #06038D; /* match container */
+            background: #06038D;
         }
 
         .controls {
@@ -113,18 +113,18 @@
 </head>
 <body>
 
-    <!-- Preview – image centered on #06038D background -->
+    <!-- Preview – image centered on #06038D background, 10ft × 4ft aspect -->
     <div class="sign">
         <img src="images/sign2.jpg" alt="Ngupi Kopi Bazar" id="signImg" />
     </div>
 
     <div class="controls">
-        <button class="btn-pdf" id="downloadPdfBtn">⬇ Download PDF (10ft × 2ft)</button>
+        <button class="btn-pdf" id="downloadPdfBtn">⬇ Download PDF (10ft × 4ft)</button>
         <button class="btn-jpg" id="downloadJpgBtn">⬇ Download JPEG</button>
     </div>
     <div class="status" id="status">⏳ Loading image…</div>
     <div class="note">
-        Output: 12,000 × 2,400 px (100 DPI) · Image kept original aspect ratio · Background: #06038D
+        Output: 12,000 × 4,800 px (100 DPI) · Image kept original aspect ratio · Background: #06038D
     </div>
 
     <canvas id="compositeCanvas"></canvas>
@@ -139,14 +139,14 @@
             const downloadPdfBtn = document.getElementById('downloadPdfBtn');
             const downloadJpgBtn = document.getElementById('downloadJpgBtn');
 
-            // ─── 100 DPI for 10ft × 2ft ──────────────────────────────────
-            const OUTPUT_WIDTH = 12000;
-            const OUTPUT_HEIGHT = 2400;
+            // ─── 100 DPI for 10ft × 4ft ──────────────────────────────────
+            const OUTPUT_WIDTH = 12000;   // 10ft * 12 * 100
+            const OUTPUT_HEIGHT = 4800;   // 4ft * 12 * 100
 
-            const PDF_WIDTH_PT = 10 * 12 * 72;
-            const PDF_HEIGHT_PT = 2 * 12 * 72;
+            const PDF_WIDTH_PT = 10 * 12 * 72;  // 8640 pt
+            const PDF_HEIGHT_PT = 4 * 12 * 72;  // 3456 pt
 
-            // Custom background colour
+            // Background colour
             const BG_COLOR = '#06038D';
 
             let imageLoaded = false;
@@ -171,12 +171,11 @@
             function compositeImage() {
                 if (!imageLoaded) return;
 
-                statusEl.textContent = '🖼️ Compositing 12k × 2.4k image (contain, #06038D bg)…';
+                statusEl.textContent = '🖼️ Compositing 12k × 4.8k image (contain, #06038D bg)…';
 
                 canvas.width = OUTPUT_WIDTH;
                 canvas.height = OUTPUT_HEIGHT;
 
-                // Fill with custom deep blue
                 ctx.fillStyle = BG_COLOR;
                 ctx.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
@@ -194,7 +193,7 @@
                 }
 
                 try {
-                    statusEl.textContent = '📄 Generating PDF (10ft × 2ft)…';
+                    statusEl.textContent = '📄 Generating PDF (10ft × 4ft)…';
 
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF('l', 'pt', [PDF_WIDTH_PT, PDF_HEIGHT_PT]);
@@ -202,9 +201,9 @@
                     const imgData = canvas.toDataURL('image/jpeg', 1.0);
                     doc.addImage(imgData, 'JPEG', 0, 0, PDF_WIDTH_PT, PDF_HEIGHT_PT);
 
-                    doc.save('ngupi_10ftx2ft_100dpi.pdf');
+                    doc.save('ngupi_10ftx4ft_100dpi.pdf');
 
-                    statusEl.textContent = '✅ PDF downloaded! (8640 × 1728 pt)';
+                    statusEl.textContent = '✅ PDF downloaded! (8640 × 3456 pt)';
                 } catch (e) {
                     statusEl.textContent = '❌ PDF generation failed. Try again.';
                     console.warn('PDF error:', e);
@@ -221,7 +220,7 @@
                 try {
                     statusEl.textContent = '📷 Generating JPEG…';
                     const link = document.createElement('a');
-                    link.download = 'ngupi_10ftx2ft_12000x2400.jpg';
+                    link.download = 'ngupi_10ftx4ft_12000x4800.jpg';
                     link.href = canvas.toDataURL('image/jpeg', 1.0);
                     document.body.appendChild(link);
                     link.click();
