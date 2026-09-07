@@ -60,7 +60,7 @@
             border-top: 3px solid rgba(192, 57, 43, 0.15);
         }
 
-        /* ── Header ── */
+        /* ── HEADER ── */
         .menu-header {
             text-align: center;
             margin-bottom: 2.6rem;
@@ -177,211 +177,149 @@
             padding-top: 0;
         }
 
-        /* ── JOMNGUPI IMAGE DISPLAY ── */
-        .jomngupi-display {
+        /* ───────────────────────────────────────────────
+                   FULL PAGE IMAGE STYLES
+                   ─────────────────────────────────────────────── */
+        .menu-wrapper.full-page {
+            max-width: 100% !important;
+            width: 100% !important;
+            padding: 0 !important;
+            margin: -2rem -1.5rem !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        .menu-wrapper.full-page .jomngupi-display {
+            min-height: 100vh;
+            height: 100vh;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            background: #f6f2eb;
+            border: none !important;
+            box-shadow: none !important;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 480px;
-            padding: 2rem 1.5rem;
-            background: linear-gradient(145deg, #f8f0e8 0%, #ede3d8 100%);
-            border-radius: 28px;
-            border: 1px solid rgba(160, 120, 90, 0.15);
-            box-shadow: inset 0 2px 20px rgba(160, 120, 90, 0.06);
-            position: relative;
             overflow: hidden;
         }
 
-        .jomngupi-display::before {
-            content: '☕';
-            position: absolute;
-            font-size: 16rem;
-            opacity: 0.04;
-            right: -2rem;
-            bottom: -4rem;
-            transform: rotate(-8deg);
-            pointer-events: none;
-        }
-
-        .jomngupi-display .badge {
-            position: absolute;
-            top: 1.2rem;
-            right: 1.5rem;
-            font-size: 0.65rem;
-            letter-spacing: 0.15em;
-            color: #8a7a6a;
-            background: rgba(255, 252, 248, 0.5);
-            padding: 0.25rem 1rem;
-            border-radius: 20px;
-            border: 1px solid rgba(160, 120, 90, 0.08);
-        }
-
-        .jomngupi-display img {
-            max-width: 100%;
-            max-height: 420px;
-            width: auto;
-            height: auto;
-            border-radius: 16px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+        .menu-wrapper.full-page .jomngupi-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
-            object-fit: contain;
+            border-radius: 0 !important;
+            box-shadow: none !important;
         }
 
-        /* fallback if image doesn't load */
-        .jomngupi-display .fallback-text {
-            display: none;
-            text-align: center;
+        .menu-wrapper.full-page .jomngupi-display .badge,
+        .menu-wrapper.full-page .jomngupi-display::before,
+        .menu-wrapper.full-page .jomngupi-display .fallback-text {
+            display: none !important;
+        }
+
+        /* fallback only shows if img fails */
+        .menu-wrapper.full-page .jomngupi-display img:not([src]),
+        .menu-wrapper.full-page .jomngupi-display img[src=""],
+        .menu-wrapper.full-page .jomngupi-display img[src="#"] {
+            display: none !important;
+        }
+
+        .menu-wrapper.full-page .jomngupi-display img:not([src]) ~ .fallback-text,
+        .menu-wrapper.full-page .jomngupi-display img[src=""] ~ .fallback-text,
+        .menu-wrapper.full-page .jomngupi-display img[src="#"] ~ .fallback-text {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: #f6f2eb;
             font-family: 'Playfair Display', serif;
             color: #3d281d;
+            padding: 2rem;
+            text-align: center;
         }
-        .jomngupi-display .fallback-text .jom {
-            font-size: 2.2rem;
+
+        .menu-wrapper.full-page .jomngupi-display .fallback-text .jom {
+            font-size: 3.5rem;
             letter-spacing: 0.5em;
             font-weight: 400;
-            display: block;
         }
-        .jomngupi-display .fallback-text .ngupi {
-            font-size: 2.2rem;
+        .menu-wrapper.full-page .jomngupi-display .fallback-text .ngupi {
+            font-size: 3.5rem;
             letter-spacing: 0.5em;
             font-weight: 400;
-            display: block;
-            margin-top: -0.2rem;
+            margin-top: -0.3rem;
         }
-        .jomngupi-display .fallback-text .kopibazar-main {
-            font-size: 3.8rem;
+        .menu-wrapper.full-page .jomngupi-display .fallback-text .kopibazar-main {
+            font-size: 5.5rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             margin-top: 0.2rem;
-            display: block;
             border-top: 2px solid rgba(90, 61, 46, 0.15);
-            padding-top: 0.6rem;
+            padding-top: 0.8rem;
         }
-        .jomngupi-display .fallback-text .price-row {
-            margin-top: 1.2rem;
+        .menu-wrapper.full-page .jomngupi-display .fallback-text .price-row {
+            margin-top: 1.5rem;
             display: flex;
             gap: 2.5rem;
             justify-content: center;
             flex-wrap: wrap;
         }
-        .jomngupi-display .fallback-text .price-row span {
-            font-size: 1.1rem;
+        .menu-wrapper.full-page .jomngupi-display .fallback-text .price-row span {
+            font-size: 1.2rem;
             font-weight: 500;
             color: #5a3d2e;
             background: rgba(255, 252, 248, 0.6);
-            padding: 0.3rem 1.2rem;
+            padding: 0.3rem 1.5rem;
             border-radius: 30px;
             border: 1px solid rgba(160, 120, 90, 0.10);
         }
 
-        img:not([src]), img[src=""], img[src="#"] {
-            display: none;
-        }
-        img:not([src]) + .fallback-text,
-        img[src=""] + .fallback-text,
-        img[src="#"] + .fallback-text {
-            display: block !important;
-        }
-
-        /* ── Responsive ── */
+        /* ── Responsive tweaks ── */
         @media (max-width: 700px) {
-            .menu-wrapper {
-                padding: 1.8rem 1.2rem 2.2rem;
-                border-radius: 30px;
+            .menu-wrapper.full-page {
+                margin: -2rem -1.5rem !important;
             }
-
-            .menu-header h1 {
-                font-size: 2.8rem;
+            .menu-wrapper.full-page .jomngupi-display {
+                min-height: 100vh;
+                height: 100vh;
             }
-
-            .menu-grid {
-                grid-template-columns: 1fr;
-                gap: 0.1rem;
+            .menu-wrapper.full-page .jomngupi-display .fallback-text .jom,
+            .menu-wrapper.full-page .jomngupi-display .fallback-text .ngupi {
+                font-size: 2.5rem;
             }
-
-            .menu-item {
-                padding: 0.6rem 0.3rem 0.6rem 0.6rem;
+            .menu-wrapper.full-page .jomngupi-display .fallback-text .kopibazar-main {
+                font-size: 3.8rem;
             }
-
-            .menu-item .name {
-                font-size: 0.95rem;
-            }
-
-            .menu-item .price {
-                font-size: 0.85rem;
-                padding: 0.1rem 0.6rem;
-            }
-
-            .category-label {
-                font-size: 0.7rem;
-                padding-top: 1rem;
-            }
-
-            .jomngupi-display {
-                min-height: 320px;
-                padding: 1.5rem 1rem;
-            }
-            .jomngupi-display img {
-                max-height: 280px;
-            }
-            .jomngupi-display .badge {
-                display: none;
-            }
-            .jomngupi-display .fallback-text .jom,
-            .jomngupi-display .fallback-text .ngupi {
-                font-size: 1.6rem;
-            }
-            .jomngupi-display .fallback-text .kopibazar-main {
-                font-size: 2.6rem;
-            }
-            .jomngupi-display .fallback-text .price-row span {
-                font-size: 0.9rem;
-                padding: 0.2rem 0.8rem;
+            .menu-wrapper.full-page .jomngupi-display .fallback-text .price-row span {
+                font-size: 1rem;
+                padding: 0.2rem 1rem;
             }
         }
 
         @media (max-width: 420px) {
-            .menu-wrapper {
-                padding: 1.2rem 0.8rem 1.8rem;
-                border-radius: 24px;
+            .menu-wrapper.full-page .jomngupi-display .fallback-text .jom,
+            .menu-wrapper.full-page .jomngupi-display .fallback-text .ngupi {
+                font-size: 1.8rem;
             }
-
-            .menu-header h1 {
-                font-size: 2.2rem;
+            .menu-wrapper.full-page .jomngupi-display .fallback-text .kopibazar-main {
+                font-size: 2.6rem;
             }
-
-            .menu-header .subtitle {
-                font-size: 0.65rem;
-            }
-
-            .menu-item .name {
-                font-size: 0.88rem;
-            }
-
-            .menu-item .price {
-                font-size: 0.78rem;
-                padding: 0.05rem 0.5rem;
-            }
-
-            .jomngupi-display {
-                min-height: 240px;
-                padding: 1rem 0.8rem;
-            }
-            .jomngupi-display img {
-                max-height: 200px;
-            }
-            .jomngupi-display .fallback-text .jom,
-            .jomngupi-display .fallback-text .ngupi {
-                font-size: 1.2rem;
-            }
-            .jomngupi-display .fallback-text .kopibazar-main {
-                font-size: 2.0rem;
+            .menu-wrapper.full-page .jomngupi-display .fallback-text .price-row span {
+                font-size: 0.8rem;
+                padding: 0.15rem 0.8rem;
             }
         }
 
         /* ── PRINT OPTIMIZATION ── */
         @media print {
-            /* Force color printing for prices and decorative borders */
+            /* Force color printing */
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
@@ -390,7 +328,7 @@
 
             body {
                 background: white !important;
-                padding: 0.3in !important;
+                padding: 0 !important;
                 margin: 0 !important;
                 display: block !important;
                 align-items: normal !important;
@@ -409,12 +347,43 @@
                 padding: 2rem 2.2rem 2.5rem !important;
                 transition: none !important;
                 page-break-inside: avoid;
-                margin-bottom: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
             }
 
             .menu-wrapper:hover {
                 box-shadow: none !important;
                 transform: none !important;
+            }
+
+            /* FULL PAGE IMAGE PRINT */
+            .menu-wrapper.full-page {
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                border-radius: 0 !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                height: 100vh;
+                page-break-after: always;
+            }
+
+            .menu-wrapper.full-page .jomngupi-display {
+                min-height: 100vh;
+                height: 100vh;
+                padding: 0 !important;
+                border-radius: 0 !important;
+                background: #f6f2eb !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            .menu-wrapper.full-page .jomngupi-display img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 0 !important;
+                box-shadow: none !important;
             }
 
             /* second, third, fourth page – force new page */
@@ -430,7 +399,6 @@
                 color: #000 !important;
                 font-size: 3.4rem !important;
             }
-
             .menu-header .subtitle {
                 color: #555 !important;
                 font-size: 0.75rem !important;
@@ -439,7 +407,6 @@
                 color: #555 !important;
                 font-size: 0.9rem !important;
             }
-
             .menu-header::after {
                 background: #555 !important;
                 opacity: 0.4 !important;
@@ -452,19 +419,16 @@
                 transform: none !important;
                 border-radius: 0 !important;
             }
-
             .menu-item:hover {
                 background: none !important;
                 border-left-color: transparent !important;
                 transform: none !important;
             }
-
             .menu-item .name {
                 color: #000 !important;
                 font-size: 1.15rem !important;
                 font-weight: 600 !important;
             }
-
             .menu-item .price {
                 color: #a13024 !important;
                 background: none !important;
@@ -474,7 +438,6 @@
                 font-weight: 700 !important;
                 box-shadow: none !important;
             }
-
             .menu-item:hover .price {
                 background: none !important;
                 border-color: #999 !important;
@@ -500,38 +463,6 @@
             .menu-item {
                 page-break-inside: avoid;
             }
-
-            /* JOMNGUPI print styles */
-            .jomngupi-display {
-                background: #f5ede6 !important;
-                border: 1px solid #ccc !important;
-                box-shadow: none !important;
-                min-height: 400px !important;
-            }
-            .jomngupi-display::before {
-                opacity: 0.06 !important;
-            }
-            .jomngupi-display .badge {
-                background: rgba(255, 252, 248, 0.6) !important;
-                color: #666 !important;
-                border-color: #ccc !important;
-            }
-            .jomngupi-display img {
-                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
-            }
-            .jomngupi-display .fallback-text .jom,
-            .jomngupi-display .fallback-text .ngupi {
-                color: #3d281d !important;
-            }
-            .jomngupi-display .fallback-text .kopibazar-main {
-                color: #2a1a12 !important;
-                border-top-color: #bbb !important;
-            }
-            .jomngupi-display .fallback-text .price-row span {
-                color: #3d281d !important;
-                background: rgba(255, 252, 248, 0.5) !important;
-                border-color: #ddd !important;
-            }
         }
 
         /* ── Scrollbar ── */
@@ -553,17 +484,15 @@
 <body>
 
     <!-- ============================================================
-    PAGE 1 – JOMNGUPI IMAGE DISPLAY (standalone)
+    PAGE 1 – FULL PAGE JOMNGUPI IMAGE
     ============================================================ -->
-    <div class="menu-wrapper">
+    <div class="menu-wrapper full-page">
 
         <div class="jomngupi-display">
-            <span class="badge">✦ signature brew</span>
-
             <!-- YOUR IMAGE GOES HERE – place "jomngupi.png" in the same folder -->
             <img src="jomngupi.png" alt="JOM NGUPI KOPIBAZAR" />
 
-            <!-- Fallback text in case image doesn't load -->
+            <!-- Fallback text in case image doesn't load (hidden when image loads) -->
             <div class="fallback-text">
                 <span class="jom">JOM</span>
                 <span class="ngupi">NGUPI</span>
@@ -576,7 +505,7 @@
         </div>
 
     </div>
-    <!-- /menu-wrapper (page 1 – JOMNGUPI) -->
+    <!-- /full-page image -->
 
 
     <!-- ============================================================
@@ -741,7 +670,7 @@
         <!-- /menu-grid -->
 
     </div>
-    <!-- /menu-wrapper (page 2 – Nasi Goreng) -->
+    <!-- /menu-wrapper (page 2) -->
 
 
     <!-- ============================================================
@@ -804,7 +733,7 @@
         <!-- /menu-grid -->
 
     </div>
-    <!-- /menu-wrapper (page 3 – Noodles) -->
+    <!-- /menu-wrapper (page 3) -->
 
 
     <!-- ============================================================
@@ -965,7 +894,7 @@
         <!-- /menu-grid -->
 
     </div>
-    <!-- /menu-wrapper (page 4 – Ala Carte) -->
+    <!-- /menu-wrapper (page 4) -->
 
 </body>
-</html>
+                                               </html>
