@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JOMNGUPI · Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        /* ── Reset & base ── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f6f2eb;
+            background-image: radial-gradient(circle at 20% 30%, #fdfaf5 0%, #f0ebe4 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1.5rem;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #2a2724;
+            gap: 2rem;
+        }
+
+        /* ── Main card ── */
+        .menu-wrapper {
+            max-width: 880px;
+            width: 100%;
+            background: rgba(255, 252, 248, 0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 40px;
+            padding: 2.8rem 3rem 3.2rem;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.06),
+                0 8px 20px rgba(0, 0, 0, 0.03),
+                0 0 0 1px rgba(180, 150, 120, 0.10);
+            border: 1px solid rgba(255, 248, 240, 0.6);
+            transition: box-shadow 0.3s ease;
+            page-break-inside: avoid;
+        }
+
+        .menu-wrapper:hover {
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(180, 150, 120, 0.15);
+        }
+
+        /* subsequent pages get a top border to separate on screen */
+        .menu-wrapper.second-page,
+        .menu-wrapper.third-page,
+        .menu-wrapper.fourth-page {
+            border-top: 3px solid rgba(192, 57, 43, 0.15);
+        }
+
+        /* ── Header ── */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 2.6rem;
+            position: relative;
+        }
+
+        .menu-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1.2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c0392b, transparent);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+
+        .menu-header .subtitle {
+            font-size: 0.8rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: #a07c5e;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .menu-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #2a1f18;
+            line-height: 1.1;
+        }
+
+        .menu-header .tagline {
+            font-size: 0.95rem;
+            color: #7f6b5c;
+            margin-top: 0.5rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+        }
+
+        /* ── Grid ── */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.1rem 1.5rem;
+        }
+
+        /* ── Item ── */
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 0.7rem 0.6rem 0.7rem 0.8rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+            cursor: default;
+        }
+
+        .menu-item:hover {
+            background: rgba(192, 57, 43, 0.04);
+            border-left-color: #c0392b;
+            transform: translateX(3px);
+        }
+
+        .menu-item .name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #2a2724;
+            letter-spacing: 0.01em;
+            padding-right: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .menu-item .price {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #b53b2c;
+            background: rgba(192, 57, 43, 0.06);
+            padding: 0.15rem 0.8rem;
+            border-radius: 30px;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+            border: 1px solid rgba(192, 57, 43, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .menu-item:hover .price {
+            background: rgba(192, 57, 43, 0.10);
+            border-color: rgba(192, 57, 43, 0.18);
+            color: #a13024;
+        }
+
+        /* ── Category label ── */
+        .category-label {
+            grid-column: 1 / -1;
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #a07c5e;
+            font-weight: 700;
+            padding: 1.2rem 0 0.3rem 0.2rem;
+            border-bottom: 1px solid rgba(180, 150, 120, 0.15);
+            margin-bottom: 0.2rem;
+        }
+
+        .category-label:first-of-type {
+            padding-top: 0;
+        }
+
+        /* ── JOMNGUPI IMAGE DISPLAY ── */
+        .jomngupi-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 480px;
+            padding: 2rem 1.5rem;
+            background: linear-gradient(145deg, #f8f0e8 0%, #ede3d8 100%);
+            border-radius: 28px;
+            border: 1px solid rgba(160, 120, 90, 0.15);
+            box-shadow: inset 0 2px 20px rgba(160, 120, 90, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .jomngupi-display::before {
+            content: '☕';
+            position: absolute;
+            font-size: 16rem;
+            opacity: 0.04;
+            right: -2rem;
+            bottom: -4rem;
+            transform: rotate(-8deg);
+            pointer-events: none;
+        }
+
+        .jomngupi-display .badge {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.5rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: #8a7a6a;
+            background: rgba(255, 252, 248, 0.5);
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(160, 120, 90, 0.08);
+        }
+
+        .jomngupi-display img {
+            max-width: 100%;
+            max-height: 420px;
+            width: auto;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+            display: block;
+            object-fit: contain;
+        }
+
+        /* fallback if image doesn't load */
+        .jomngupi-display .fallback-text {
+            display: none;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            color: #3d281d;
+        }
+        .jomngupi-display .fallback-text .jom {
+            font-size: 2.2rem;
+            letter-spacing: 0.5em;
+            font-weight: 400;
+            display: block;
+        }
+        .jomngupi-display .fallback-text .ngupi {
+            font-size: 2.2rem;
+            letter-spacing: 0.5em;
+            font-weight: 400;
+            display: block;
+            margin-top: -0.2rem;
+        }
+        .jomngupi-display .fallback-text .kopibazar-main {
+            font-size: 3.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-top: 0.2rem;
+            display: block;
+            border-top: 2px solid rgba(90, 61, 46, 0.15);
+            padding-top: 0.6rem;
+        }
+        .jomngupi-display .fallback-text .price-row {
+            margin-top: 1.2rem;
+            display: flex;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .jomngupi-display .fallback-text .price-row span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #5a3d2e;
+            background: rgba(255, 252, 248, 0.6);
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid rgba(160, 120, 90, 0.10);
+        }
+
+        img:not([src]), img[src=""], img[src="#"] {
+            display: none;
+        }
+        img:not([src]) + .fallback-text,
+        img[src=""] + .fallback-text,
+        img[src="#"] + .fallback-text {
+            display: block !important;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 700px) {
+            .menu-wrapper {
+                padding: 1.8rem 1.2rem 2.2rem;
+                border-radius: 30px;
+            }
+
+            .menu-header h1 {
+                font-size: 2.8rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 0.1rem;
+            }
+
+            .menu-item {
+                padding: 0.6rem 0.3rem 0.6rem 0.6rem;
+            }
+
+            .menu-item .name {
+                font-size: 0.95rem;
+            }
+
+            .menu-item .price {
+                font-size: 0.85rem;
+                padding: 0.1rem 0.6rem;
+            }
+
+            .category-label {
+                font-size: 0.7rem;
+                padding-top: 1rem;
+            }
+
+            .jomngupi-display {
+                min-height: 320px;
+                padding: 1.5rem 1rem;
+            }
+            .jomngupi-display img {
+                max-height: 280px;
+            }
+            .jomngupi-display .badge {
+                display: none;
+            }
+            .jomngupi-display .fallback-text .jom,
+            .jomngupi-display .fallback-text .ngupi {
+                font-size: 1.6rem;
+            }
+            .jomngupi-display .fallback-text .kopibazar-main {
+                font-size: 2.6rem;
+            }
+            .jomngupi-display .fallback-text .price-row span {
+                font-size: 0.9rem;
+                padding: 0.2rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .menu-wrapper {
+                padding: 1.2rem 0.8rem 1.8rem;
+                border-radius: 24px;
+            }
+
+            .menu-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .menu-header .subtitle {
+                font-size: 0.65rem;
+            }
+
+            .menu-item .name {
+                font-size: 0.88rem;
+            }
+
+            .menu-item .price {
+                font-size: 0.78rem;
+                padding: 0.05rem 0.5rem;
+            }
+
+            .jomngupi-display {
+                min-height: 240px;
+                padding: 1rem 0.8rem;
+            }
+            .jomngupi-display img {
+                max-height: 200px;
+            }
+            .jomngupi-display .fallback-text .jom,
+            .jomngupi-display .fallback-text .ngupi {
+                font-size: 1.2rem;
+            }
+            .jomngupi-display .fallback-text .kopibazar-main {
+                font-size: 2.0rem;
+            }
+        }
+
+        /* ── PRINT OPTIMIZATION ── */
+        @media print {
+            /* Force color printing for prices and decorative borders */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            body {
+                background: white !important;
+                padding: 0.3in !important;
+                margin: 0 !important;
+                display: block !important;
+                align-items: normal !important;
+                min-height: auto !important;
+                gap: 0 !important;
+            }
+
+            .menu-wrapper {
+                max-width: 100% !important;
+                background: white !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                border-radius: 12px !important;
+                padding: 2rem 2.2rem 2.5rem !important;
+                transition: none !important;
+                page-break-inside: avoid;
+                margin-bottom: 0 !important;
+            }
+
+            .menu-wrapper:hover {
+                box-shadow: none !important;
+                transform: none !important;
+            }
+
+            /* second, third, fourth page – force new page */
+            .menu-wrapper.second-page,
+            .menu-wrapper.third-page,
+            .menu-wrapper.fourth-page {
+                page-break-before: always !important;
+                border-top: none !important;
+                margin-top: 0 !important;
+            }
+
+            .menu-header h1 {
+                color: #000 !important;
+                font-size: 3.4rem !important;
+            }
+
+            .menu-header .subtitle {
+                color: #555 !important;
+                font-size: 0.75rem !important;
+            }
+            .menu-header .tagline {
+                color: #555 !important;
+                font-size: 0.9rem !important;
+            }
+
+            .menu-header::after {
+                background: #555 !important;
+                opacity: 0.4 !important;
+            }
+
+            .menu-item {
+                padding: 0.5rem 0.3rem 0.5rem 0.5rem !important;
+                border-left-color: transparent !important;
+                transition: none !important;
+                transform: none !important;
+                border-radius: 0 !important;
+            }
+
+            .menu-item:hover {
+                background: none !important;
+                border-left-color: transparent !important;
+                transform: none !important;
+            }
+
+            .menu-item .name {
+                color: #000 !important;
+                font-size: 1.15rem !important;
+                font-weight: 600 !important;
+            }
+
+            .menu-item .price {
+                color: #a13024 !important;
+                background: none !important;
+                border: 1px solid #ccc !important;
+                padding: 0.1rem 0.7rem !important;
+                font-size: 1.0rem !important;
+                font-weight: 700 !important;
+                box-shadow: none !important;
+            }
+
+            .menu-item:hover .price {
+                background: none !important;
+                border-color: #999 !important;
+                color: #a13024 !important;
+            }
+
+            .category-label {
+                color: #333 !important;
+                border-bottom: 1px solid #bbb !important;
+                font-size: 0.8rem !important;
+                font-weight: 700 !important;
+                padding-top: 1.0rem !important;
+                margin-bottom: 0.1rem !important;
+            }
+
+            .menu-grid {
+                gap: 0.1rem 1.2rem !important;
+            }
+
+            .category-label {
+                page-break-after: avoid;
+            }
+            .menu-item {
+                page-break-inside: avoid;
+            }
+
+            /* JOMNGUPI print styles */
+            .jomngupi-display {
+                background: #f5ede6 !important;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                min-height: 400px !important;
+            }
+            .jomngupi-display::before {
+                opacity: 0.06 !important;
+            }
+            .jomngupi-display .badge {
+                background: rgba(255, 252, 248, 0.6) !important;
+                color: #666 !important;
+                border-color: #ccc !important;
+            }
+            .jomngupi-display img {
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+            }
+            .jomngupi-display .fallback-text .jom,
+            .jomngupi-display .fallback-text .ngupi {
+                color: #3d281d !important;
+            }
+            .jomngupi-display .fallback-text .kopibazar-main {
+                color: #2a1a12 !important;
+                border-top-color: #bbb !important;
+            }
+            .jomngupi-display .fallback-text .price-row span {
+                color: #3d281d !important;
+                background: rgba(255, 252, 248, 0.5) !important;
+                border-color: #ddd !important;
+            }
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ede8e2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c0392b;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a13024;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    PAGE 1 – JOMNGUPI IMAGE DISPLAY (standalone)
+    ============================================================ -->
+    <div class="menu-wrapper">
+
+        <div class="jomngupi-display">
+            <span class="badge">✦ signature brew</span>
+
+            <!-- YOUR IMAGE GOES HERE – place "jomngupi.png" in the same folder -->
+            <img src="jomngupi.png" alt="JOM NGUPI KOPIBAZAR" />
+
+            <!-- Fallback text in case image doesn't load -->
+            <div class="fallback-text">
+                <span class="jom">JOM</span>
+                <span class="ngupi">NGUPI</span>
+                <span class="kopibazar-main">KOPIBAZAR</span>
+                <div class="price-row">
+                    <span>🍫☕ Chocolate Coffee RM 3.90</span>
+                    <span>☕✨ White Coffee RM 3.90</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /menu-wrapper (page 1 – JOMNGUPI) -->
+
+
+    <!-- ============================================================
+    PAGE 2 – NASI GORENG
+    ============================================================ -->
+    <div class="menu-wrapper second-page">
+
+        <div class="menu-header">
+            <div class="subtitle">✦ Malaysian comfort food ✦</div>
+            <h1>Nasi Goreng</h1>
+            <div class="tagline">— wok‑charred, fragrant &amp; full of soul —</div>
+        </div>
+
+        <div class="menu-grid">
+
+            <!-- ─── CLASSIC ─── -->
+            <div class="category-label">Classic</div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Vegetarian</span>
+                <span class="price">RM 5.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Biasa</span>
+                <span class="price">RM 5.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Cili Api</span>
+                <span class="price">RM 6.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Kicap</span>
+                <span class="price">RM 6.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Mamak</span>
+                <span class="price">RM 6.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Belacan</span>
+                <span class="price">RM 6.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Ikan Bilis</span>
+                <span class="price">RM 6.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Sardin</span>
+                <span class="price">RM 8.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Pattaya</span>
+                <span class="price">RM 8.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Ikan Masin</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Ayam</span>
+                <span class="price">RM 9.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Daging</span>
+                <span class="price">RM 9.80</span>
+            </div>
+
+            <!-- Paprik variations -->
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Paprik Ayam</span>
+                <span class="price">RM 10.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Paprik Daging</span>
+                <span class="price">RM 10.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Paprik Seafood</span>
+                <span class="price">RM 12.50</span>
+            </div>
+
+            <!-- Masak Kunyit variations -->
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Ayam Masak Kunyit</span>
+                <span class="price">RM 10.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Daging Masak Kunyit</span>
+                <span class="price">RM 10.50</span>
+            </div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Seafood</span>
+                <span class="price">RM 12.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng USA</span>
+                <span class="price">RM 12.50</span>
+            </div>
+
+            <!-- ─── KAMPUNG ─── -->
+            <div class="category-label">Kampung Style</div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Kampung</span>
+                <span class="price">RM 6.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Kampung Ayam</span>
+                <span class="price">RM 11.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Kampung Daging</span>
+                <span class="price">RM 11.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Kampung Seafood</span>
+                <span class="price">RM 13.90</span>
+            </div>
+
+            <!-- ─── CINA ─── -->
+            <div class="category-label">Cina Style</div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Cina</span>
+                <span class="price">RM 6.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Cina Ayam</span>
+                <span class="price">RM 10.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Cina Daging</span>
+                <span class="price">RM 10.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Cina Seafood</span>
+                <span class="price">RM 12.90</span>
+            </div>
+
+            <!-- ─── TOMYAM ─── -->
+            <div class="category-label">Tomyam Style</div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Tomyam</span>
+                <span class="price">RM 8.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Tomyam Ayam</span>
+                <span class="price">RM 12.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Tomyam Daging</span>
+                <span class="price">RM 12.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Goreng Tomyam Seafood</span>
+                <span class="price">RM 14.90</span>
+            </div>
+
+        </div>
+        <!-- /menu-grid -->
+
+    </div>
+    <!-- /menu-wrapper (page 2 – Nasi Goreng) -->
+
+
+    <!-- ============================================================
+    PAGE 3 – MEE / BIHUN / KUEY TEOW / MAGGI
+    ============================================================ -->
+    <div class="menu-wrapper third-page">
+
+        <div class="menu-header">
+            <div class="subtitle">✦ Noodle classics ✦</div>
+            <h1>Mee · Bihun · Kuey Teow · Maggi</h1>
+            <div class="tagline">— stir‑fried, soupy &amp; satisfying —</div>
+        </div>
+
+        <div class="menu-grid">
+
+            <div class="category-label">Noodles</div>
+
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Vegetarian</span>
+                <span class="price">RM 5.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Biasa</span>
+                <span class="price">RM 5.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Cina</span>
+                <span class="price">RM 6.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Kicap</span>
+                <span class="price">RM 6.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Mamak</span>
+                <span class="price">RM 6.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Sup</span>
+                <span class="price">RM 7.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Pattaya</span>
+                <span class="price">RM 8.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Ayam</span>
+                <span class="price">RM 9.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Daging</span>
+                <span class="price">RM 9.80</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Mee / Bihun / Kuey Teow / Maggi Seafood</span>
+                <span class="price">RM 12.00</span>
+            </div>
+
+        </div>
+        <!-- /menu-grid -->
+
+    </div>
+    <!-- /menu-wrapper (page 3 – Noodles) -->
+
+
+    <!-- ============================================================
+    PAGE 4 – ALA CARTE · NASI AYAM · NASI PENYET · NASI GEPUK · BAKSO
+    ============================================================ -->
+    <div class="menu-wrapper fourth-page">
+
+        <div class="menu-header">
+            <div class="subtitle">✦ Rice &amp; more ✦</div>
+            <h1>Ala Carte · Nasi Ayam · Penyet · Gepuk</h1>
+            <div class="tagline">— hearty, spicy &amp; satisfying —</div>
+        </div>
+
+        <div class="menu-grid">
+
+            <!-- ─── ALA CARTE ─── -->
+            <div class="category-label">Ala Carte</div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Putih</span>
+                <span class="price">RM 2.00</span>
+            </div>
+
+            <div class="menu-item">
+                <span class="name">Telur Mata</span>
+                <span class="price">RM 1.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Telur Dadar</span>
+                <span class="price">RM 2.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Telur Separuh Masak</span>
+                <span class="price">RM 3.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Telur Dadar Cheese</span>
+                <span class="price">RM 4.50</span>
+            </div>
+
+            <div class="menu-item">
+                <span class="name">Muiz Hot Chicken</span>
+                <span class="price">RM 5.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Ayam Goreng</span>
+                <span class="price">RM 5.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Ikan Kembung Goreng</span>
+                <span class="price">RM 5.50</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Ikan Keli Goreng</span>
+                <span class="price">RM 5.90</span>
+            </div>
+
+            <div class="menu-item">
+                <span class="name">Ayam / Daging Masak Kunyit</span>
+                <span class="price">RM 6.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Ayam / Daging Masak Merah</span>
+                <span class="price">RM 6.90</span>
+            </div>
+
+            <div class="menu-item">
+                <span class="name">Sup Sayur</span>
+                <span class="price">RM 5.00</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Sup Ayam / Daging</span>
+                <span class="price">RM 8.00</span>
+            </div>
+
+            <div class="menu-item">
+                <span class="name">Tomyam Ayam / Daging</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Tomyam Seafood</span>
+                <span class="price">RM 11.90</span>
+            </div>
+
+            <!-- ─── NASI AYAM ─── -->
+            <div class="category-label">Nasi Ayam</div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Ayam Panggang</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Ayam Muiz Hot Chicken</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Ayam Goreng</span>
+                <span class="price">RM 8.90</span>
+            </div>
+
+            <!-- ─── NASI PENYET ─── -->
+            <div class="category-label">Nasi Penyet</div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Ayam Penyet Muiz</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Ayam Penyet</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Ikan Keli Penyet</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Kembung Penyet</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Daging Penyet</span>
+                <span class="price">RM 9.90</span>
+            </div>
+
+            <!-- ─── NASI GEPUK ─── -->
+            <div class="category-label">Nasi Gepuk</div>
+
+            <div class="menu-item">
+                <span class="name">Nasi Ayam Gepuk Muiz</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Ayam Gepuk</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Ikan Keli Gepuk</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Kembung Gepuk</span>
+                <span class="price">RM 8.90</span>
+            </div>
+            <div class="menu-item">
+                <span class="name">Nasi Daging Gepuk</span>
+                <span class="price">RM 9.90</span>
+            </div>
+
+            <!-- ─── BAKSO ─── -->
+            <div class="category-label">Soups</div>
+
+            <div class="menu-item">
+                <span class="name">Bakso</span>
+                <span class="price">RM 9.00</span>
+            </div>
+
+        </div>
+        <!-- /menu-grid -->
+
+    </div>
+    <!-- /menu-wrapper (page 4 – Ala Carte) -->
+
+</body>
+</html>
