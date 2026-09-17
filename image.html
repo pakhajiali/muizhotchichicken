@@ -39,9 +39,11 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
         }
 
+        /* each panel = 10ft × 4ft → 2.5:1 */
         .sign>div {
             flex: 0 0 50%;
             overflow: hidden;
+            position: relative;
         }
 
         .sign img {
@@ -110,12 +112,19 @@
             font-size: 0.8rem;
             margin-top: 6px;
             text-align: center;
+            max-width: 700px;
+            line-height: 1.5;
+        }
+
+        .badge {
+            color: #6ee7b7;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <!-- Preview (side‑by‑side) -->
+    <!-- Preview (side‑by‑side) – overall 20ft × 4ft, each panel 10ft × 4ft -->
     <div class="sign">
         <div><img src="images/sign1.jpg" alt="Muiz Hot Chicken" id="imgLeft" /></div>
         <div><img src="images/sign2.jpg" alt="Ngupi Kopibazar" id="imgRight" /></div>
@@ -127,7 +136,9 @@
     </div>
     <div class="status" id="status">⏳ Loading images…</div>
     <div class="note">
-        Output: 24,000 × 4,800 px (100 DPI) · JPEG max quality · PDF page: 20ft × 4ft (17280 × 3456 pt)
+        Overall sign: <span class="badge">20ft × 4ft</span> · each panel 10ft × 4ft ·
+        Output: 24,000 × 4,800 px (100 DPI) · JPEG max quality<br />
+        PDF page: 20ft × 4ft (17,280 × 3,456 pt) — nothing downloads automatically.
     </div>
 
     <canvas id="compositeCanvas"></canvas>
@@ -144,14 +155,15 @@
             const downloadJpgBtn = document.getElementById('downloadJpgBtn');
 
             // ─── 100 DPI for 20ft × 4ft ──────────────────────────────────
-            // 20 ft = 240 inches → 240 * 100 = 24 000 px wide
-            //  4 ft =  48 inches →  48 * 100 =  4 800 px high
+            // 20 ft = 240 inches → 240 * 100 = 24 000 px wide
+            //  4 ft =  48 inches →  48 * 100 =  4 800 px high
+            // Each panel is 10ft × 4ft → 12 000 × 4 800 px
             const OUTPUT_WIDTH = 24000;
-            const OUTPUT_HEIGHT = 4800; // (was 2400 for 2ft)
+            const OUTPUT_HEIGHT = 4800;
 
             // PDF page size in points (1 pt = 1/72 inch)
             const PDF_WIDTH_PT = 20 * 12 * 72; // 17280 pt
-            const PDF_HEIGHT_PT = 4 * 12 * 72; // 3456 pt (was 1728)
+            const PDF_HEIGHT_PT = 4 * 12 * 72; // 3456 pt
 
             let leftLoaded = false;
             let rightLoaded = false;
@@ -160,6 +172,7 @@
             // ─── COMPOSITE ────────────────────────────────────────────────
             function compositeImages() {
                 if (!leftLoaded || !rightLoaded) return;
+                if (compositeReady) return; // build once
 
                 statusEl.textContent = '🖼️ Compositing 24k × 4.8k image… (may take 5‑10 seconds)';
 
@@ -168,17 +181,14 @@
 
                 ctx.clearRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
 
-                const halfWidth = OUTPUT_WIDTH / 2;
+                const halfWidth = OUTPUT_WIDTH / 2; // 12 000 px = 10 ft
                 ctx.drawImage(imgLeft, 0, 0, halfWidth, OUTPUT_HEIGHT);
                 ctx.drawImage(imgRight, halfWidth, 0, halfWidth, OUTPUT_HEIGHT);
 
                 compositeReady = true;
-                statusEl.textContent = '✅ Composite ready (24 000 × 4 800 px). Downloading PDF…';
-
-                // Auto‑download PDF after a short delay
-                setTimeout(() => {
-                    downloadPDF();
-                }, 400);
+                statusEl.textContent =
+                    '✅ Composite ready — 24,000 × 4,800 px (20ft × 4ft @ 100 DPI). ' +
+                    'Pick a download option above.';
             }
 
             // ─── DOWNLOAD: PDF (embeds the full 24k image) ──────────────
@@ -202,7 +212,7 @@
 
                     doc.save('muiz_ngupi_20ft_x_4ft_100dpi.pdf');
 
-                    statusEl.textContent = '✅ PDF downloaded! (17280 × 3456 pt, ~100‑150 MB)';
+                    statusEl.textContent = '✅ PDF downloaded! (17,280 × 3,456 pt = 20ft × 4ft)';
                 } catch (e) {
                     statusEl.textContent = '❌ PDF generation failed. Try again.';
                     console.warn('PDF error:', e);
@@ -224,7 +234,7 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    statusEl.textContent = '✅ JPEG downloaded (max quality, ~150‑200 MB)!';
+                    statusEl.textContent = '✅ JPEG downloaded (24,000 × 4,800 px, 20ft × 4ft @ 100 DPI).';
                 } catch (e) {
                     statusEl.textContent = '❌ JPEG download error.';
                     console.warn('JPEG error:', e);
@@ -234,20 +244,18 @@
             // ─── IMAGE LOAD HANDLERS ─────────────────────────────────────
             imgLeft.addEventListener('load', function() {
                 leftLoaded = true;
-                statusEl.textContent = 'Left image loaded.';
                 compositeImages();
             });
 
             imgRight.addEventListener('load', function() {
                 rightLoaded = true;
-                statusEl.textContent = 'Right image loaded.';
                 compositeImages();
             });
 
             // If images are already cached
-            if (imgLeft.complete) leftLoaded = true;
-            if (imgRight.complete) rightLoaded = true;
-            if (imgLeft.complete && imgRight.complete) {
+            if (imgLeft.complete && imgLeft.naturalWidth > 0) leftLoaded = true;
+            if (imgRight.complete && imgRight.naturalWidth > 0) rightLoaded = true;
+            if (leftLoaded && rightLoaded) {
                 setTimeout(compositeImages, 100);
             }
 
@@ -255,10 +263,10 @@
                 statusEl.textContent = '❌ Failed to load images/sign1.jpg';
             });
             imgRight.addEventListener('error', () => {
-                statusEl.textContent = '❌ Failed to load images/sign2.png';
+                statusEl.textContent = '❌ Failed to load images/sign2.jpg';
             });
 
-            // ─── BUTTON BINDINGS ──────────────────────────────────────────
+            // ─── BUTTON BINDINGS (manual downloads only) ─────────────────
             downloadPdfBtn.addEventListener('click', downloadPDF);
             downloadJpgBtn.addEventListener('click', downloadJPEG);
 
