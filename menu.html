@@ -8,13 +8,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ── A4 page setup for print ── */
         @page {
             size: A4 portrait;
             margin: 0;
         }
 
-        /* ── Reset & base ── */
         *,
         *::before,
         *::after {
@@ -51,7 +49,6 @@
             max-width: 880px;
         }
 
-        /* ── Main card ── */
         .menu-wrapper {
             max-width: 880px;
             width: 100%;
@@ -82,7 +79,6 @@
             border-top: 3px solid rgba(192, 57, 43, 0.15);
         }
 
-        /* ── Header ── */
         .menu-header {
             text-align: center;
             margin-bottom: 2.6rem;
@@ -128,14 +124,12 @@
             letter-spacing: 0.03em;
         }
 
-        /* ── Grid ── */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0.1rem 1.5rem;
         }
 
-        /* ── Item ── */
         .menu-item {
             display: flex;
             justify-content: space-between;
@@ -182,7 +176,6 @@
             color: #a13024;
         }
 
-        /* ── Discounted price styling ── */
         .menu-item.discounted .price {
             white-space: normal;
             background: rgba(192, 57, 43, 0.12);
@@ -225,7 +218,6 @@
             border-color: rgba(192, 57, 43, 0.4);
         }
 
-        /* ── Category label ── */
         .category-label {
             grid-column: 1 / -1;
             font-size: 0.75rem;
@@ -242,7 +234,6 @@
             padding-top: 0;
         }
 
-        /* ── PAGE 1 · COVER (text only) ── */
         .menu-wrapper.page-cover {
             min-height: 78vh;
             display: flex;
@@ -301,7 +292,6 @@
             opacity: 0.5;
         }
 
-        /* ── PRINT / PDF BUTTON ── */
         .pdf-download-wrap {
             display: flex;
             flex-direction: column;
@@ -364,7 +354,6 @@
             font-weight: 700;
         }
 
-        /* ── Responsive (screen only) ── */
         @media (max-width: 700px) {
             .menu-wrapper:not(.page-cover) {
                 padding: 1.8rem 1.2rem 2.2rem;
@@ -418,9 +407,6 @@
             .cover-kicker { font-size: 0.6rem; letter-spacing: 0.35em; }
         }
 
-        /* ============================================================
-           PRINT STYLES — one menu page = one A4 page (210 × 297 mm)
-           ============================================================ */
         @media print {
             * {
                 -webkit-print-color-adjust: exact !important;
@@ -718,9 +704,26 @@
             </div>
 
             <div class="menu-grid">
+                <div class="category-label">Combo</div>
+                <div class="menu-item discounted">
+                    <span class="name">Nasi Goreng Ayam + Teh O / Sirap Ais</span>
+                    <span class="price">
+                        <span class="old-price">RM 11.50</span>
+                        <span class="new-price">RM 9.90</span>
+                        <span class="promo-tag">PROMO</span>
+                    </span>
+                </div>
+
                 <div class="category-label">Classic</div>
                 <div class="menu-item"><span class="name">Nasi Goreng Vegetarian</span><span class="price">RM 5.90</span></div>
-                <div class="menu-item"><span class="name">Nasi Goreng Biasa</span><span class="price">RM 5.90</span></div>
+                <div class="menu-item discounted">
+                    <span class="name">Nasi Goreng Biasa</span>
+                    <span class="price">
+                        <span class="old-price">RM 6.50</span>
+                        <span class="new-price">RM 4.90</span>
+                        <span class="promo-tag">PROMO</span>
+                    </span>
+                </div>
                 <div class="menu-item"><span class="name">Nasi Goreng Cili Api</span><span class="price">RM 6.50</span></div>
                 <div class="menu-item"><span class="name">Nasi Goreng Kicap</span><span class="price">RM 6.50</span></div>
                 <div class="menu-item"><span class="name">Nasi Goreng Mamak</span><span class="price">RM 6.50</span></div>
@@ -780,6 +783,16 @@
                 <div class="menu-item"><span class="name">Mee / Bihun / Kuey Teow / Maggi Ayam</span><span class="price">RM 9.50</span></div>
                 <div class="menu-item"><span class="name">Mee / Bihun / Kuey Teow / Maggi Daging</span><span class="price">RM 9.80</span></div>
                 <div class="menu-item"><span class="name">Mee / Bihun / Kuey Teow / Maggi Seafood</span><span class="price">RM 12.00</span></div>
+
+                <!-- NEW NOODLE ADDITIONS -->
+                <div class="menu-item"><span class="name">Ramen Original</span><span class="price">RM 8.90</span></div>
+                <div class="menu-item"><span class="name">Ramen Cheese</span><span class="price">RM 8.90</span></div>
+                <div class="menu-item"><span class="name">Ramen Carbonara</span><span class="price">RM 8.90</span></div>
+                <div class="menu-item"><span class="name">Ramen 2 × Spicy</span><span class="price">RM 8.90</span></div>
+                <div class="menu-item"><span class="name">Mee Sedap Kosong</span><span class="price">RM 3.00</span></div>
+                <div class="menu-item"><span class="name">Mee Sedap Kosong Double</span><span class="price">RM 5.80</span></div>
+                <div class="menu-item"><span class="name">Indomee Goreng Kosong</span><span class="price">RM 3.00</span></div>
+                <div class="menu-item"><span class="name">Indomee Double Kosong</span><span class="price">RM 5.80</span></div>
             </div>
         </div>
 
@@ -847,14 +860,14 @@
                 </div>
                 <div class="menu-item"><span class="name">Nasi Ayam Penyet</span><span class="price">RM 8.90</span></div>
                 <div class="menu-item"><span class="name">Nasi Ikan Keli Penyet</span><span class="price">RM 8.90</span></div>
-                <div class="menu-item"><span class="name">Nasi Kembung Penyet</span><span class="price">RM 8.90</span></div>
+                <div class="menu-item"><span class="name">Nasi Ikan Kembung Penyet</span><span class="price">RM 8.90</span></div>
                 <div class="menu-item"><span class="name">Nasi Daging Penyet</span><span class="price">RM 9.90</span></div>
 
                 <div class="category-label">Nasi Gepuk</div>
                 <div class="menu-item"><span class="name">Nasi Ayam Gepuk Muiz</span><span class="price">RM 8.90</span></div>
                 <div class="menu-item"><span class="name">Nasi Ayam Gepuk</span><span class="price">RM 8.90</span></div>
                 <div class="menu-item"><span class="name">Nasi Ikan Keli Gepuk</span><span class="price">RM 8.90</span></div>
-                <div class="menu-item"><span class="name">Nasi Kembung Gepuk</span><span class="price">RM 8.90</span></div>
+                <div class="menu-item"><span class="name">Nasi Ikan Kembung Gepuk</span><span class="price">RM 8.90</span></div>
                 <div class="menu-item"><span class="name">Nasi Daging Gepuk</span><span class="price">RM 9.90</span></div>
 
                 <div class="category-label">Soups</div>
@@ -887,15 +900,15 @@
                 <div class="menu-item"><span class="name">Roti Pisang</span><span class="price">RM 3.50</span></div>
                 <div class="menu-item"><span class="name">Roti Planta</span><span class="price">RM 2.50</span></div>
                 <div class="menu-item"><span class="name">Roti Cheese</span><span class="price">RM 2.90</span></div>
-                <div class="menu-item"><span class="name">Roti Bom</span><span class="price">RM 2.50</span></div>
-                <div class="menu-item"><span class="name">Roti Susu</span><span class="price">RM 2.30</span></div>
+                <div class="menu-item"><span class="name">Roti Bom</span><span class="price">RM 3.00</span></div>
+                <div class="menu-item"><span class="name">Roti Susu</span><span class="price">RM 2.50</span></div>
                 <div class="menu-item"><span class="name">Roti Jantan</span><span class="price">RM 4.50</span></div>
                 <div class="menu-item"><span class="name">Roti Jantan Bawang</span><span class="price">RM 5.00</span></div>
                 <div class="menu-item"><span class="name">Roti Tampal</span><span class="price">RM 2.90</span></div>
                 <div class="menu-item"><span class="name">Roti Telur Cheese</span><span class="price">RM 4.50</span></div>
                 <div class="menu-item"><span class="name">Roti Pisang Cheese</span><span class="price">RM 5.00</span></div>
                 <div class="menu-item"><span class="name">Roti Sardin</span><span class="price">RM 4.50</span></div>
-                <div class="menu-item"><span class="name">Roti Milo</span><span class="price">RM 3.00</span></div>
+                <div class="menu-item"><span class="name">Roti Milo</span><span class="price">RM 3.80</span></div>
                 <div class="menu-item"><span class="name">Roti Jantan Cheese</span><span class="price">RM 5.80</span></div>
 
                 <div class="category-label">Murtabak</div>
@@ -953,7 +966,7 @@
                 <div class="menu-item"><span class="name">Kopi Jantan</span><span class="price">RM 2.50 / RM 3.00</span></div>
                 <div class="menu-item"><span class="name">Tongkat Ali</span><span class="price">RM 2.50 / RM 3.00</span></div>
                 <div class="menu-item"><span class="name">Extra Joss Kosong</span><span class="price">RM 2.00 / RM 2.50</span></div>
-                <div class="menu-item"><span class="name">Extra Joss</span><span class="price">RM 2.50 / RM 3.00</span></div>
+                <div class="menu-item"><span class="name">Extra Joss Susu</span><span class="price">RM 2.50 / RM 3.00</span></div>
                 <div class="menu-item"><span class="name">Fresh Apple</span><span class="price">RM 4.50 / RM 5.00</span></div>
                 <div class="menu-item"><span class="name">Fresh Orange</span><span class="price">RM 4.50 / RM 5.00</span></div>
                 <div class="menu-item"><span class="name">Fresh Cucumber</span><span class="price">RM 4.50 / RM 5.00</span></div>
